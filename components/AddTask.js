@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Overlay, Input, Button } from "react-native-elements";
+import { Overlay, Input } from "react-native-elements";
+import { Button } from "react-native";
+
 import styles from "../stylesheet";
 
 // The AddTask is a button for adding tasks. When the button is pressed, an
@@ -35,7 +37,8 @@ export function AddTask({ createTask }) {
       <Button
         type="clear"
         titleStyle={styles.plusButton}
-        title="&#x2b;"
+        title="Nova tarefa"
+        color="#218838" 
         onPress={() => {
           setOverlayVisible(true);
         }}

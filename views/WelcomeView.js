@@ -28,7 +28,7 @@ export function WelcomeView({ navigation }) {
       console.log("Logadooo ...");
     } catch (error) {
       console.log(error.message);
-      Alert.alert(`Failed to sign in: ${error.message}`);
+      Alert.alert(`Falha ao logar -> ${error.message}`);
     }
   };
 
@@ -38,12 +38,11 @@ export function WelcomeView({ navigation }) {
     try {
       console.log("Tentou cadastrar ...");
       await signUp(email, password);
-      signIn(email, password);
-      redirectTaskList();
+      await signIn(email, password, redirectTaskList);
       console.log("Cadastradooo ...");
     } catch (error) {
       console.log(error.message);
-      Alert.alert(`Failed to sign up: ${error.message}`);
+      Alert.alert(`Falha ao cadastrar -> ${error.message}`);
     }
   };
 

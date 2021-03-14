@@ -18,19 +18,4 @@ class Task {
   };
 }
 
-class User {
-
-  static schema = {
-    name: "User",
-    properties: {
-      _id: "objectId",
-      _partition: "string?",
-      email: "string",
-      password: "string",
-    },
-    primaryKey: "_id",
-    required : ["_id", "email", "password"]
-  };
-}
-
-export { Task, User };
+export { Task };

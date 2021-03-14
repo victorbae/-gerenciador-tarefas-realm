@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Realm from "realm";
-import { Task, User } from "../schemas";
+import { Task } from "../schemas";
 import { useAuth } from "./AuthProvider";
 import { getRealmApp } from "../getRealmApp";
 import { ObjectId } from "bson";
@@ -16,22 +16,26 @@ const TasksProvider = ({ children, projectPartition }) => {
   // directly rendered, so updating it should not trigger a re-render as using
   // state would.
   const realmRef = useRef(null);
+  console.log(projectPartition);
   useEffect(() => {
+    if (!user) {
+      return;
+    }
+    
     const config = {
-      schema: [Task, User],
+      schema: [Task.schema],
       sync: {
         user: user,
         partitionValue: projectPartition,
       },
     };
-    console.log("[TaskProvider] ...aguardando conexão");
+
     Realm.App.Sync.setLogLevel(app, "debug");
     // open a realm for this particular project
     Realm.open(config).then((projectRealm) => {
       realmRef.current = projectRealm;
-      console.log("[TaskProvider] Conectado Realm ->" + projectRealm);
-
       const syncTasks = projectRealm.objects("Task");
+      console.log(syncTasks);
       let sortedTasks = syncTasks.sorted("name");
       setTasks([...sortedTasks]);
       sortedTasks.addListener(() => {

@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import { useTasks } from "../providers/TasksProvider";
 import { TaskItem } from "../components/TaskItem";
+import { Logout } from "../components/Logout";
 import { AddTask } from "../components/AddTask";
 import styles from "../stylesheet";
 
@@ -12,7 +13,7 @@ export function TasksView({ navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerRight: function Header() {
-        return <AddTask createTask={createTask} />;
+        return <Logout />;
       },
       title: `My Tasks`,
     });
@@ -20,6 +21,9 @@ export function TasksView({ navigation }) {
 
   return (
     <View style={styles.alignCenter}>
+      <View style={styles.plusButtonWrapper}>
+        <AddTask createTask={createTask} />
+      </View>
       {tasks.map((task) =>
         task ? <TaskItem key={`${task._id}`} task={task} /> : null
       )}

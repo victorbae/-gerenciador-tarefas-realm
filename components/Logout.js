@@ -2,28 +2,28 @@ import * as React from "react";
 import { Button, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../providers/AuthProvider";
-import styles from "../stylesheet";
 import { View } from "react-native";
+import styles from "../stylesheet";
 
 export function Logout() {
   const navigation = useNavigation();
   const { signOut } = useAuth();
 
   return (
-    <View style={styles.logoutWrapperButton}>
+    <View style={styles.logoutButtonWrapper}>
       <Button
         title="Sair"
         onPress={() => {
-          Alert.alert("Deseja realmente sair desse sistema incrivel?", null, [
+          Alert.alert("Tem certeza que deseja sair desse sistema incrível?", null, [
             {
               text: "Infelizmente sim!",
               style: "destructive",
               onPress: () => {
                 signOut();
-                navigation.popToTop();
+                navigation.navigate('Welcome View');
               },
             },
-            { text: "Vou ficar mais um pouco!", style: "cancel" },
+            { text: "Pensando bem, vou ficar mais um pouco!", style: "cancel" },
           ]);
         }}
         />

@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Realm from "realm";
 import { getRealmApp } from "../getRealmApp";
-import { Task, User } from "../schemas";
-import { ObjectId } from "bson";
-import BcryptReactNative from 'bcrypt-react-native';
+import { Alert } from "react-native";
+import { Task } from "../schemas";
 
 
 // Access the Realm App.
@@ -17,33 +16,31 @@ const AuthContext = React.createContext(null);
 // AuthContext value to its descendants. Components under an AuthProvider can
 // use the useAuth() hook to access the auth value.
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(app.currentUser || null);
+  const [user, setUser] = useState(app.currentUser);
   const realmRef = useRef(null);
-  const [partition, setPartition] = useState([]);
+  const [partition, setPartition] = useState(null);
 
   useEffect(() => {
     if (!user) {
       return;
     }
-
+    console.log(user);
     // The current user always has their own project, so we don't need
     // to wait for the user object to load before displaying that project.
     setPartition(`project=${user.id}`);
     const config = {
-      schema: [Task, User],
+      schema: [Task.schema],
       sync: {
-        user: user,
+        user,
         partitionValue: `user=${user.id}`,
       },
     };
 
-    console.log("[AuthProvider] ...aguardando conexão -> " + `user=${user.id}`);
     Realm.App.Sync.setLogLevel(app, "debug");
     // Open a realm with the logged in user's partition value in order
     // to get the projects that the logged in user is a member of
     Realm.open(config).then((userRealm) => {
       realmRef.current = userRealm;
-      console.log("[AuthProvider] Conectado Realm ->" + userRealm);
     });
 
     return () => {
@@ -60,35 +57,21 @@ const AuthProvider = ({ children }) => {
   // The signIn function takes an email and password and uses the
   // emailPassword authentication provider to log in.
   const signIn = async (email, password, callback) => {
-    const creds = Realm.Credentials.emailPassword(email, password);
-    const newUser = await app.logIn(creds);
-    setUser(newUser);
-  
-    if (user) {
+    try{
+      const creds = Realm.Credentials.emailPassword(email, password);
+      const newUser = await app.logIn(creds);
+      setUser(newUser);
       callback();
+    } catch (error){
+      console.log(error);
+      Alert.alert(`Falha ao logar -> ${error.message}`);
     }
   };
 
   // The signUp function takes an email and password and uses the
   // emailPassword authentication provider to register the user.
   const signUp = async (email, password) => {
-    const userRealm = realmRef.current;
-    // await app.emailPasswordAuth.registerUser(email, password);
-    const salt = await BcryptReactNative.getSalt(6);
-    const pwd = await BcryptReactNative.hash(salt, "senha");
-    const _id = new ObjectId();
-    userRealm.write(() => {
-      userRealm.create(
-        "User",
-        {
-          _id: _id,
-          _partition: `user=${_id}`,
-          email: email,
-          password: pwd
-        }
-      );
-    });
-    console.log("É pra ter salvado ...");
+    await app.emailPasswordAuth.registerUser(email, password);
   };
 
   // The signOut function calls the logOut function on the currently

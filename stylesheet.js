@@ -10,10 +10,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 2,
   },
-  plusButton: {
-    fontSize: 28,
-    fontWeight: "400",
-    marginRight: 6
+  plusButtonWrapper: {
+    marginBottom: 6,
+  },
+  logoutButtonWrapper: {
+    marginRight: 15,
   },
   viewTop: {
     top: '15%',
